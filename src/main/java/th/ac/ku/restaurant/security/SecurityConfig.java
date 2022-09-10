@@ -16,21 +16,24 @@ import th.ac.ku.restaurant.service.UserDetailsServiceImp;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+
+
     @Autowired
     private UserDetailsServiceImp userDetailsService;
+
+
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/signup",
-                        "/css/**", "/js/**").permitAll()
+                .antMatchers("/", "/signup", "/css/**", "/js/**").permitAll()
+                .antMatchers("/menu/add")
+                .access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/menu")
+                .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
-
-                .and()
-                .formLogin().loginPage("/login")
-                .defaultSuccessUrl("/", true)
-                .permitAll()
                 .and()
                 .logout().logoutUrl("/logout")
                 .clearAuthentication(true)
